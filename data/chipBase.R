@@ -1,0 +1,23 @@
+setwd("~/OtherAnalysis/2015_07_03_mRNAvsProtein/DraftMapOfHumanProteome/data/")
+
+options(stringsAsFactors=F)
+
+str(tfs2 <- read.csv("chipBase_Human_proteinTFBSs2015-07-04_02-09.csv", skip=1))
+str(tfs2 <- subset(tfs2, select=c(tfName, geneSymbol)))
+str(geneNames <- read.table("~/Data/Uniprot/2015_04_22/Human_GeneNames.tab", sep ="\t"))
+str(geneNames$oneGene <- sapply(strsplit(geneNames$V2, " "), function(v)return(v[1])))
+str(ensg <- read.table("~/Data/Uniprot/misc/2015_07_03_ENSGs.txt", sep ="\t", header = T))
+sum(tfs2$tfName %in% geneNames$oneGene)
+sum(toupper(tfs2$tfName) %in% geneNames$oneGene)
+sum(tfs2$geneSymbol %in% geneNames$oneGene)
+sum(toupper(tfs2$geneSymbol) %in% geneNames$oneGene)
+table(is.na(tfs2$tf.ac <- geneNames[match(toupper(tfs2$tfName), geneNames$oneGene), ]$V1))
+table(is.na(tfs2$target.ac <- geneNames[match(toupper(tfs2$geneSymbol), geneNames$oneGene), ]$V1))
+table(is.na(tfs2$tf.ensg <- ensg[match(toupper(tfs2$tf.ac), ensg$From), ]$To))
+table(is.na(tfs2$target.ensg <- ensg[match(toupper(tfs2$target.ac), ensg$From), ]$To))
+head(tfs2)
+head(subset(tfs2, is.na(tf.ac)))
+head(subset(tfs2, is.na(target.ac)))
+
+chipBase <- subset(tfs2, !is.na(tf.ensg) & !is.na(target.ensg), select=c(tf.ensg, target.ensg))
+save(chipBase, file ="chipbase.RData")

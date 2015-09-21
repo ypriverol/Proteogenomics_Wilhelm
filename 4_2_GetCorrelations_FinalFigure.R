@@ -1,0 +1,70 @@
+setwd("~/OtherAnalysis/2015_07_03_mRNAvsProtein/DraftMapOfHumanProteome/")
+
+library(reshape)
+library(ggplot2)
+
+(load(file="4_mats.RData"))
+names(mats)
+
+# QUICK LOOK --------------------------------------------------------------
+# (names(mats) <- gsub("LOO", "zLOO", gsub("NI", "zNI", gsub("TFs", "zTFs", names(mats)))))
+lapply(mats, str)
+sapply(is.na(mats), sum)
+sapply(mats, function(m) sum(m==0, na.rm=T))
+
+# CORRELATIONS ------------------------------------------------------------
+corMats <- list()
+for(matNam in names(mats)[c(1,3,4)]){
+  rownames(mats[[matNam]]) <- proteins
+  colnames(mats[[matNam]]) <- tissues
+  corMats[[matNam]] <- sapply(tissues, function(t1){cor(mats$prots[,t1], mats[[matNam]][,t1], method="spearman", use="pairwise.complete.obs")})
+}
+
+# Correlation for those where most info is present ------------------------
+for(proteinsPresent in c(3, 6, 9, 12)){
+  str(proteins2 <- rownames(mats$mRNAs)[which(apply(!is.na(mats$mRNAs), 1, sum) >= proteinsPresent & apply(!is.na(mats$prots), 1, sum) >= proteinsPresent)])
+  corMats[[paste0("ratio_", proteinsPresent)]] <- sapply(tissues, function(t1){cor(mats$prots[proteins2,t1], mats$ratio[proteins2,t1], method="spearman", use="pairwise.complete.obs")})
+}
+
+
+# GROUPS BY VARIANCE (norm to mean) ---------------------------------------
+averageProt <- apply(mats$prots, 1, function(row){mean(row, na.rm=T)})
+varProt <- apply(mats$prots, 1, function(row){var(row, na.rm=T)})/averageProt**2
+subGroups <- split(proteins, cut(varProt, breaks=quantile(varProt, na.rm=T)))
+sapply(subGroups, length)
+names(subGroups) <- c("low", "midLow", "midHigh", "high")
+
+for(subGroupNam in names(subGroups)){
+  proteins2 <- subGroups[[subGroupNam]]
+  predMat <- matrix(NA, nrow=length(proteins2), ncol=length(tissues))
+  for(p.idx in 1:length(proteins2)){
+    for(t.idx in 1:length(tissues)){
+      ratio <- median(mats$prots[proteins2[p.idx], -t.idx]/mats$mRNAs[proteins2[p.idx], -t.idx], na.rm=T)
+      predMat[p.idx, t.idx] <- mats$mRNAs[proteins2[p.idx], t.idx] * ratio
+    }
+  }
+  corMats[[paste0("ratio_LOO_", subGroupNam)]] <- sapply(1:length(tissues), function(t1){cor(mats$prots[proteins2,t1], predMat[,t1], method="spearman", use="pairwise.complete.obs")})
+}
+
+
+# MAKE FIGURE -------------------------------------------------------------
+
+names(corMats)
+sapply(corMats, length)
+pDat <- melt.list(corMats)
+pDat$predictionMat <- factor(pDat$L1, levels=names(corMats))
+ggplot(pDat, aes(x=predictionMat, y=value)) + theme_bw(24) + 
+  ylab("Spearman correlation") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  geom_boxplot(fill="lightgrey", colour="grey", outlier.colour = "grey") + geom_jitter(position = position_jitter(width = .1))
+ggsave("4_1_FinalFigure.pdf")
+
+
+
+# HOW ARE THE CORRELATIONS BY PROTEIN? ------------------------------------
+pCorMats <- list()
+for(matNam in names(mats)[c(1,3,4)]){
+  pCorMats[[matNam]] <- sapply(1:length(proteins), function(p.idx){cor(mats$prots[p.idx,], mats[[matNam]][p.idx,], method="spearman", use="pairwise.complete.obs")})
+}
+sapply(pCorMats, function(vec) sum(!is.na(vec)))
+boxplot(pCorMats)
+
