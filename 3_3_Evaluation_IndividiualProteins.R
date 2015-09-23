@@ -1,5 +1,7 @@
 setwd("~/OtherAnalysis/2015_07_03_mRNAvsProtein/DraftMapOfHumanProteome/")
 
+# this file looks at individual proteins
+
 (load("2_mats.RData"))
 
 (names(mats) <- gsub("LOO", "zLOO", gsub("NI", "zNI", gsub("TFs", "zTFs", names(mats)))))

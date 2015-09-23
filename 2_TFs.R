@@ -1,8 +1,11 @@
 setwd("~/OtherAnalysis/2015_07_03_mRNAvsProtein/DraftMapOfHumanProteome/")
 
+# this file uses transcription factors to predict protein. 
+# Currently only the first 4 TFs are used because using all would have to many features
+# at this point this is not very useful yet
+
 load("1_mats.RData")
 options(stringsAsFactors=F)
-
 
 # WHICH GENE TO LOOK AT FOR EACH PROTEIN? ---------------------------------
 str(tfs <- read.table("data/TranscriptionFactors.txt", sep = "\t", header =T)$To)

@@ -1,10 +1,12 @@
 setwd("~/OtherAnalysis/2015_07_03_mRNAvsProtein/DraftMapOfHumanProteome/")
 
+# predicting protein simply (only from the mRNA in question)
+
 load("0_0_data.RData")
 
 tissues <- colnames(geneUN)
 table(apply(!is.na(geneUN), 1, sum), apply(!is.na(protUN), 1, sum))
-str(proteins <- rownames(geneUN))
+str(proteins <- rownames(geneUN)) # using all genes
 # proteins2 is for lm but not used currently
 str(proteins2 <- rownames(geneUN)[which(apply(!is.na(geneUN), 1, sum) != 0 & apply(!is.na(protUN), 1, sum) != 0)])
 

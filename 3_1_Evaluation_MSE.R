@@ -1,5 +1,7 @@
 setwd("~/OtherAnalysis/2015_07_03_mRNAvsProtein/DraftMapOfHumanProteome/")
 
+# Evaluation of the predicted proteins by mean and median squared error
+
 (load("2_mats.RData"))
 
 (names(mats) <- gsub("LOO", "zLOO", gsub("NI", "zNI", gsub("TFs", "zTFs", names(mats)))))
