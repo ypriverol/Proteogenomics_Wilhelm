@@ -1,3 +1,6 @@
 *.xlsx
 *.pdf
+.Rhistory
+._README.md
 
+*_Nik.R
