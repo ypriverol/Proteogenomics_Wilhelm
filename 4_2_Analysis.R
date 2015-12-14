@@ -1,8 +1,3 @@
-setwd("~/OtherAnalysis/2015_07_03_mRNAvsProtein/DraftMapOfHumanProteome/")
-
-# evaluating the predictions by getting correlation (across proteins per sample as done in the original publication)
-# also evaluating the effect of missing data and variability
-
 library(reshape)
 library(ggplot2)
 
