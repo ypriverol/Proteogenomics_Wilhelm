@@ -1,6 +1,3 @@
-source("../0_SETUP.R")
-setwd("final/")
-
 library(gdata)
 library(ggplot2)
 library(reshape)
@@ -46,5 +43,7 @@ length(lmFull$coefficients)
 # ANOVA -------------------------------------------------------------------
 # this is what they should have done:
 anova(lmRatio, lmIntercept)
+anova(lmIntercept, lmRatio)
 # this is our way:
 anova(lmFull, lmIntercept)
+anova(lmIntercept, lmFull)
