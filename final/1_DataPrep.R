@@ -1,6 +1,3 @@
-source("../0_SETUP.R")
-setwd("final/")
-
 # DATA IMPORT -------------------------------------------------------------
 str(prot <- data.matrix(read.csv("../data/proteins.csv", row.names = 1)))
 str(gene <- data.matrix(read.csv("../data/transcripts.csv", row.names = 1)))

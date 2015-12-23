@@ -1,7 +1,4 @@
 # predicting protein simply (only from the mRNA in question)
-source("../0_SETUP.R")
-setwd("final/")
-
 load("1_Mats.RData")
 
 library(limma)

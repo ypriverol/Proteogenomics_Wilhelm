@@ -1,21 +1,16 @@
-source("../SETUP.R")
-setwd("final/")
-
 library(reshape)
 library(ggplot2)
 library(gdata)
 
 (load(file="3_Mats.RData"))
 label = ""
-
+names(mats)
 
 # QUICK LOOK --------------------------------------------------------------
 names(mats)
 lapply(mats, str)
 sapply(mats, function(m) sum(is.na(m), na.rm=T))
 table(apply(is.na(mats$prots), 1, sum))
-77*12
-77*12+248
 
 # CORRELATIONS IN SAMPLES ACROSS PROTEINS------------------------------------------------------------
 corMats <- list() # this is where the correlations are stored finally
@@ -28,7 +23,7 @@ for(matNam in names(mats)){
 write.csv(do.call(cbind, corMats), file=paste0("4_AcrossGenes",label,".csv"))
 
 
-# MAKE Boxplots ACROSS GENES -------------------------------------------------------------
+# MAKE Boxplots ACROSS GENES PER TISSUE  -------------------------------------------------------------
 matriXes <- c("mRNAs", "Ratio", "Control")
 names(corMats)
 sapply(corMats, length)
@@ -43,18 +38,23 @@ ggsave(paste0("4_AcrossGenes",label,".pdf"), width=5, height=5)
 
 
 # CORRELATIONS BY PROTEIN ACROSS SAMPLES ------------------------------------
-# pCorMats <- list()
-# for(matNam in c("mRNAs", "Ratio")){
-#   pCorMats[[matNam]] <- sapply(1:length(proteins), function(p.idx){cor(mats$prots[p.idx,], mats[[matNam]][p.idx,], method="spearman", use="pairwise.complete.obs")})
-# }
-# sapply(pCorMats, function(vec) sum(!is.na(vec)))
-# str(pDat <- melt(pCorMats))
-# ggplot(pDat, aes(x=L1, y=value)) + geom_violin(fill = "lightgrey") + 
-#   xlab("Method") + ylab("Correlation (R)") + 
-#   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-#   theme_bw(24)
-# ggsave(paste0("4_AcrossSamples",label,".pdf"), width=5, height=5)
+pCorMats <- list()
+for(matNam in c("mRNAs", "Ratio")){
+  pCorMats[[matNam]] <- sapply(1:length(proteins), function(p.idx){cor(mats$prots[p.idx,], mats[[matNam]][p.idx,], method="spearman", use="pairwise.complete.obs")})
+}
+sapply(pCorMats, function(vec) sum(!is.na(vec)))
+str(pDat <- melt(pCorMats))
+ggplot(pDat, aes(x=L1, y=value)) + geom_boxplot(fill = "lightgrey") + 
+  xlab("Method") + ylab("Correlation (R)") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme_bw(24)
+ggsave(paste0("4_AcrossSamples",label,".pdf"), width=5, height=5)
 
+# Histogram
+ggplot(subset(pDat, L1 == "mRNAs"), aes(x=value)) + geom_histogram() + 
+  theme_bw(24) + xlab("Correlation (R) per gene") + ylab("Count")
+ggsave("4_AcrossSamples_histogram.pdf", width=5, height=5)
+table(subset(pDat, L1 == "mRNAs")$value)
 
 # OVERFIT EFFECT ----------------------------------------------------------
 xx <- data.frame(

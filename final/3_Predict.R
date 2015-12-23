@@ -1,7 +1,3 @@
-source("../0_SETUP.R")
-setwd("final/")
-
-
 # FUNCTIONS FOR PREDICTION ------------------------------------------------
 
 addPredictionsToMats <- function(mats, proteins, tissues){
