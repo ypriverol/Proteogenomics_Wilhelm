@@ -2,6 +2,7 @@ library(gdata)
 library(ggplot2)
 library(reshape)
 library(reshape2)
+library(plyr)
 
 load("3_Mats.RData")
 
@@ -31,7 +32,7 @@ ggplot(pDat3, aes(x=log2(sd_ratio/mean_ratio))) + geom_histogram() + xlim(-4, 4)
 quantile(pDat3$sd_ratio/pDat3$mean_ratio, na.rm=T)
 quantile(log2(pDat3$sd_ratio/pDat3$mean_ratio), na.rm=T)
 ggplot(pDat3, aes(x=sd_ratio/mean_ratio)) + stat_ecdf() + theme_bw(24) + 
-  xlab("Relative Standard Deviation") + ylab("Fraction")
+  xlab("Relative standard deviation") + ylab("Fraction")
 ggsave("9_relSD_ecdf.pdf", width = 5, height = 5)
 
 ggplot(pDat3, aes(x=sd_ratio)) + stat_ecdf() + xlim(0, 25)

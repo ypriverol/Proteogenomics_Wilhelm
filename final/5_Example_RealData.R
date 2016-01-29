@@ -53,5 +53,16 @@ ggplot(pDat2, aes(y=Protein)) +
   theme_bw(24) +
   scale_x_log10() + scale_y_log10() + 
   theme(legend.position="none") + 
-  xlab("mRNA / predicted protein") + ylab("Observed protein")
+  xlab("mRNA (open) and\npredicted protein (solid)") + ylab("Observed protein")
+ggsave("5_Example_withArrows.pdf", width=5, height=5)
+
+ggplot(pDat2, aes(y=Protein)) + 
+  geom_abline(slope=1, size = 2, colour = "lightgrey") +
+  geom_point(aes(x=Ratio, colour=Gene)) + 
+  stat_ellipse(aes(x=Ratio, colour=Gene), level=.99) + 
+  stat_ellipse(aes(x=Ratio), level=.999) + 
+  theme_bw(24) +
+  scale_x_log10() + scale_y_log10() + 
+  theme(legend.position="none") + 
+  xlab("Predicted protein") + ylab("Observed protein")
 ggsave("5_Example.pdf", width=5, height=5)

@@ -22,14 +22,14 @@ str(genes <- genes[which(na.count <= 9)])
 str(modelDat <- drop.levels(subset(modelDat, Gene %in% genes)))
 str(modelDat <- drop.levels(subset(modelDat, !is.na(Protein) & !is.na(mRNA))))
 
-# SLOPE ONLY --------------------------------------------------------------
-lmRatio <- lm(Protein ~ Gene:mRNA-1, data=modelDat)
-summary(lmRatio)$r.squared
-head(lmRatio$coefficients)
-length(lmRatio$coefficients)
+# # SLOPE ONLY --------------------------------------------------------------
+# lmRatio <- lm(Protein ~ Gene:mRNA-1, data=modelDat)
+# summary(lmRatio)$r.squared
+# head(lmRatio$coefficients)
+# length(lmRatio$coefficients)
 
 # INTERCEPT only ---------------------------------------------------------------
-lmIntercept <- lm(Protein ~ Gene-1, data=modelDat)
+lmIntercept <- lm(Protein ~ Gene, data=modelDat)
 summary(lmIntercept)$r.squared
 head(lmIntercept$coefficients)
 length(lmIntercept$coefficients)
@@ -42,8 +42,8 @@ length(lmFull$coefficients)
 
 # ANOVA -------------------------------------------------------------------
 # this is what they should have done:
-anova(lmRatio, lmIntercept)
-anova(lmIntercept, lmRatio)
+# anova(lmRatio, lmIntercept)
+# anova(lmIntercept, lmRatio)
 # this is our way:
 anova(lmFull, lmIntercept)
 anova(lmIntercept, lmFull)
