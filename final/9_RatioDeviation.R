@@ -6,6 +6,9 @@ library(plyr)
 
 load("3_Mats.RData")
 
+mean(apply(mats$prots, 2, var, na.rm=T))
+mean(apply(mats$prots, 1, var, na.rm=T), na.rm=T)
+
 g <- c("ENSG00000102309", # Peptidyl-prolyl cis-trans isomerase NIMA-interacting 4
 "ENSG00000072042",        # Retinol dehydrogenase 11
 "ENSG00000184047",        # DIABLO
