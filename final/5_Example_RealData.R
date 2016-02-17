@@ -60,7 +60,7 @@ ggplot(pDat2, aes(y=Protein)) +
   geom_abline(slope=1, size = 2, colour = "lightgrey") +
   geom_point(aes(x=Ratio, colour=Gene)) + 
   stat_ellipse(aes(x=Ratio, colour=Gene), level=.99) + 
-  stat_ellipse(aes(x=Ratio), level=.999) + 
+  stat_ellipse(aes(x=Ratio), level=.99) + 
   theme_bw(24) +
   scale_x_log10() + scale_y_log10() + 
   theme(legend.position="none") + 

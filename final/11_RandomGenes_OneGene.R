@@ -18,7 +18,7 @@ rownames(aDat) <- genes
 
 set.seed(18828)
 
-# PREDICT PROTEINS FROM ALL OTHER GENES (Average after) -------------------------------------------------------------------
+# PREDICT PROTEINS FROM ONE GENE (Average after) -------------------------------------------------------------------
 library(doMC)
 gns.idces <- 1:length(proteins)
 randomVecs <- foreach(p.idx=1:length(proteins)) %do% {

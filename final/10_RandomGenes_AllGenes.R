@@ -84,3 +84,7 @@ ggplot(pDat, aes(x=value, colour=predictionMat, group=predictionMat)) + theme_bw
 #   theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
   geom_density(fill=NA, size=2)
 ggsave(paste0("10_Random_AcrossTissuesPerGene.pdf"), width=5, height=5)
+
+
+
+

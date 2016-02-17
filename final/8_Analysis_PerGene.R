@@ -19,7 +19,7 @@ mean(apply(mats$prots, 2, var,na.rm=T), na.rm=T)
 table(values.av <- sapply(genes, function(p){
   return(sum(!is.na(mats$prots[p,]) & !is.na(mats$mRNA[p,])))
 }))
-ggplot(data.frame(Values=factor(values.av)), aes(x=Values)) + geom_histogram() + theme_bw(24)
+ggplot(data.frame(Values=values.av), aes(x=Values)) + geom_bar(stat="count") + theme_bw(24)
 ggsave("8_Values.pdf", width=7, height=5)
 names(values.av) <- genes
 str(genes2 <- genes[which(values.av >= 3)])
@@ -99,6 +99,8 @@ ggsave("8_R2_histogram.pdf", width=5, height=5)
 median(subset(aDat, Values >= 9)$R2, na.rm=T)
 sum(subset(aDat, Values >= 9)$R2 < 0, na.rm=T)/sum(!is.na(subset(aDat, Values >= 9)$R2))
 
+
+
 # A proper LS model (slope only) FOR EACH GENE -------------------------------------------------------
 
 pModels <- lapply(genes2, function(p){ return(lm(mats$prots[p,] ~ mats$mRNAs[p,] - 1)) })
@@ -120,8 +122,9 @@ median(subset(aDat, Values >= 9)$R2_LS, na.rm=T)
 
 
 # A proper LS model (intercept and slope) FOR EACH GENE -------------------------------------------------------
-
-pModels2 <- lapply(genes2, function(p){ return(lm(mats$prots[p,] ~ mats$mRNAs[p,])) })
+protsMat2 <- mats$prots
+protsMat2[which(is.na(mats$mRNAs))] <- NA
+pModels2 <- lapply(genes2, function(p){ return(lm(protsMat2[p,] ~ mats$mRNAs[p,])) })
 names(pModels2) <- genes2
 summary(pModels2[[1]])
 # get R2
@@ -138,8 +141,26 @@ ggplot(subset(aDat, Values >= 9), aes(x=R2_LS2)) + geom_histogram(binwidth=0.01)
 ggsave("8_R2_LS2_histogram.pdf", width=5, height=5)
 median(subset(aDat, Values >= 9)$R2_LS2, na.rm=T)
 
-# # OVERFIT EFFECT ----------------------------------------------------------
+# get F-test p.values per gene for intercept vs intercept and slope
+pModelsInt <- lapply(genes2, function(p){ return(lm(protsMat2[p,] ~ 1)) })
+names(pModelsInt) <- genes2
+pvals <- sapply(1:length(genes2), function(x) anova(pModelsInt[[x]], pModels2[[x]])$"Pr(>F)"[2])
+ggplot(data.frame(pvals = pvals), aes(x=pvals)) + geom_histogram() + 
+  theme_bw(24) + xlab("P-value") + ylab("Count")
+ggsave("8_R2_LS2_Pvalues_Hist.pdf", width = 7, height = 5)
 
+sum(!is.na(pvals))
+length(pvals)
+sum(pvals < 0.05)
+sum(pvals < 0.05)/length(pvals)
+sum(p.adjust(pvals, method="BH")<0.05)/length(pvals)
+
+ggplot(data.frame(pvals = pvals), aes(x=pvals)) + stat_ecdf() + 
+  theme_bw(24) + xlab("p-values") + ylab("Count")
+ggsave("8_R2_LS2_Pvalues_ECDF.pdf", width = 5, height = 5)
+
+
+# # OVERFIT EFFECT ----------------------------------------------------------
 xx <- data.frame(
   claimed_MSE = apply((mats$prots-mats$Ratio)**2, 1, function(row){return(mean(row, na.rm=T))}),
   overfit_cor_MSE = apply((mats$prots-mats$RatioLOO)**2, 1, function(row){return(mean(row, na.rm=T))}),

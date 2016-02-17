@@ -9,6 +9,15 @@ load("3_Mats.RData")
 mean(apply(mats$prots, 2, var, na.rm=T))
 mean(apply(mats$prots, 1, var, na.rm=T), na.rm=T)
 
+var(apply(mats$prots, 1, mean, na.rm=T),na.rm=T)
+ggplot(data.frame(x=apply(mats$prots, 1, var, na.rm=T)), aes(x=x)) + geom_histogram() + 
+  geom_vline(xintercept=var(apply(mats$prots, 1, mean, na.rm=T),na.rm=T), color = "red", lwd = 2) + 
+  scale_x_log10() + theme_bw(24) + xlab("Variance per gene") + ylab("Count")
+ggsave("9_GeneVariance.pdf", height = 5, width = 5)
+
+var(apply(mats$prots, 1, median, na.rm=T),na.rm=T)
+median(apply(mats$prots, 1, var, na.rm=T),na.rm=T)
+
 g <- c("ENSG00000102309", # Peptidyl-prolyl cis-trans isomerase NIMA-interacting 4
 "ENSG00000072042",        # Retinol dehydrogenase 11
 "ENSG00000184047",        # DIABLO

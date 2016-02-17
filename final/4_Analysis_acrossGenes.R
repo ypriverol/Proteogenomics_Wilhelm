@@ -53,3 +53,25 @@ ggplot(pDat, aes(x=predictionMat, y=value)) + theme_bw(24) +
   geom_boxplot(fill="lightgrey", colour="grey", outlier.colour = "grey") + 
   geom_jitter(position = position_jitter(width = .1))
 ggsave(paste0("4_AcrossGenes_OverfitCor",label,".pdf"), width=7, height=5)
+
+
+
+
+# LM ACROSS GENES ---------------------------------------------------------
+protsMat2 <- mats$prots
+protsMat2[which(is.na(mats$mRNAs))] <- NA
+pModelsAcrossFull <- lapply(tissues, function(ts) lm(protsMat2[,ts]~mats$mRNAs[,ts]))
+names(pModelsAcrossFull) <- tissues
+summary(pModelsAcrossFull[[3]])
+cor(mats$prots[,3], mats$mRNAs[,3], use="pairwise.complete.obs")
+pModelsAcrossInt <- lapply(tissues, function(ts) lm(protsMat2[,ts]~1))
+names(pModelsAcrossInt) <- tissues
+summary(pModelsAcrossInt[[4]])
+data.frame(
+  R2 = sapply(pModelsAcrossFull, function(m) return(summary(m)$r.squared)),
+  P.value = sapply(tissues, function(ts) anova(pModelsAcrossInt[[ts]], pModelsAcrossFull[[ts]])$"Pr(>F)"[2])
+)
+
+plot(protsMat2[,"stomach"], mats$mRNAs[,"stomach"])
+cor(protsMat2[,"stomach"], mats$mRNAs[,"stomach"], use="pairwise.complete.obs")
+dev.print(pdf, "4_Stomach.pdf")
