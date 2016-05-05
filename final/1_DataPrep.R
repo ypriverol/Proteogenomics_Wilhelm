@@ -15,6 +15,7 @@ stopifnot(all(rownames(prot) == rownames(gene)))
 stopifnot(all(rownames(prot) == rownames(ratio)))
 
 # THAT's WHAT THEY DID
+# UN... UnNormalized
 geneUN <- (10**gene)/10**6
 protUN <- 10**(prot-10)
 
