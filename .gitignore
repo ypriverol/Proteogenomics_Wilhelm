@@ -1,5 +1,7 @@
 *.xlsx
 *.pdf
+*.png
+
 .Rhistory
 ._README.md
 
