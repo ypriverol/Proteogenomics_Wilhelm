@@ -7,7 +7,6 @@ load("3_Mats.RData")
 
 genes <- proteins
 
-<<<<<<< HEAD
 dim(mats$prots)
 
 # within gene variance
@@ -32,25 +31,13 @@ ggplot(pDat, aes(x=Variance, color=Label, group=Label)) +
   stat_ecdf(size=3) +
   theme_bw(24) + scale_x_log10() + ylab("ECDF")
 ggsave("8_VarianceDifference.jpg", height = 5, width = 8)
-=======
-# within gene variance
-mean(apply(mats$prots, 1, var,na.rm=T), na.rm=T)
-
-# between gene variance
-mean(apply(mats$prots, 2, var,na.rm=T), na.rm=T)
-
->>>>>>> e6c4eefc10b5e70115f8e58358f3136d05e7d9e9
 
 # NAs ---------------------------------------------------------------------
 
 table(values.av <- sapply(genes, function(p){
   return(sum(!is.na(mats$prots[p,]) & !is.na(mats$mRNA[p,])))
 }))
-<<<<<<< HEAD
 ggplot(data.frame(Values=values.av), aes(x=Values)) + geom_bar() + theme_bw(24)
-=======
-ggplot(data.frame(Values=values.av), aes(x=Values)) + geom_bar(stat="count") + theme_bw(24)
->>>>>>> e6c4eefc10b5e70115f8e58358f3136d05e7d9e9
 ggsave("8_Values.pdf", width=7, height=5)
 names(values.av) <- genes
 str(genes2 <- genes[which(values.av >= 3)])
@@ -67,12 +54,8 @@ ggplot(aDat, aes(x=factor(Values), y=Correlation)) + geom_boxplot() +
   theme_bw(24) + xlab("Values available") + ylab("Correlation (R) per gene")
 ggsave("8_Spearman_boxplots.pdf", width=7, height=5)
 
-<<<<<<< HEAD
 # histogram
 ggplot(subset(aDat, Values >= 9), aes(x=Correlation)) + geom_histogram(fill="navy", color="navy") + 
-=======
-ggplot(subset(aDat, Values >= 9), aes(x=Correlation)) + geom_histogram() + 
->>>>>>> e6c4eefc10b5e70115f8e58358f3136d05e7d9e9
   theme_bw(24) + xlab("Correlation (R) per gene") + ylab("Count") + xlim(-1, 1)
 ggsave("8_Spearman_histogram.pdf", width=5, height=5)
 median(subset(aDat, Values >= 9)$Correlation, na.rm=T)
@@ -129,11 +112,7 @@ ggsave("8_R2_boxplots.pdf", width=7, height=5)
 sapply(split(aDat$R2, factor(aDat$Values)), min, na.rm=T)
 
 # Histogram
-<<<<<<< HEAD
 ggplot(subset(aDat, Values >= 9), aes(x=R2)) + geom_histogram(binwidth=0.05, fill = "navy", color="navy") + 
-=======
-ggplot(subset(aDat, Values >= 9), aes(x=R2)) + geom_histogram(binwidth=0.05) + 
->>>>>>> e6c4eefc10b5e70115f8e58358f3136d05e7d9e9
   theme_bw(24) + xlab("R squared") + ylab("Count") + xlim(-2, 1)
 ggsave("8_R2_histogram.pdf", width=5, height=5)
 median(subset(aDat, Values >= 9)$R2, na.rm=T)
@@ -200,7 +179,6 @@ ggplot(data.frame(pvals = pvals), aes(x=pvals)) + stat_ecdf() +
 ggsave("8_R2_LS2_Pvalues_ECDF.pdf", width = 5, height = 5)
 
 
-<<<<<<< HEAD
 
 # MSE ---------------------------------------------------------------------
 
@@ -230,8 +208,6 @@ ggplot(mseDatBox, aes(y=value, x=variable)) +
   geom_boxplot() + theme_bw(24) + ylab("Mean squared error") + xlab("")
 ggsave("8_MSE_Boxplot.pdf", height=5, width=5)
 
-=======
->>>>>>> e6c4eefc10b5e70115f8e58358f3136d05e7d9e9
 # # OVERFIT EFFECT ----------------------------------------------------------
 xx <- data.frame(
   claimed_MSE = apply((mats$prots-mats$Ratio)**2, 1, function(row){return(mean(row, na.rm=T))}),
