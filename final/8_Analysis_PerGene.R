@@ -182,6 +182,7 @@ ggsave("8_R2_LS2_Pvalues_ECDF.pdf", width = 5, height = 5)
 
 # MSE ---------------------------------------------------------------------
 
+# Comparing MSE between the ratio and the control method
 str(matsMSE <- mats[c("RatioLOO", "ControlLOO")])
 str(ses <- lapply(matsMSE, function(m) (mats$prots - m)**2))
 str(mses <- lapply(ses, function(m) apply(m, 1, mean, na.rm=T)))
