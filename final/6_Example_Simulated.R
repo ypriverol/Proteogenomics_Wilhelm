@@ -45,9 +45,13 @@ p2 <- p + geom_segment(data=pDat2, aes(
   y=(minR-xx) * ratioR, 
   yend=(maxR+xx) * ratioR
   ), colour="grey", size =1)
+<<<<<<< HEAD
 p2 + geom_point(size=3, shape=16) + 
   theme(legend.key = element_blank()) + 
   theme(axis.title.y=element_text(margin=margin(0,20,0,0)))
+=======
+p2 + geom_point(size=3, shape=16)
+>>>>>>> e6c4eefc10b5e70115f8e58358f3136d05e7d9e9
 ggsave("6_ExampleB.pdf", width=5, height=5)
 
 # plot with intercept per gene
@@ -58,7 +62,11 @@ p2 <- p + geom_segment(data=pDat2, aes(
   y=medianP, 
   yend=medianP
 ), colour="grey", size =1)
+<<<<<<< HEAD
 p2 + geom_point(size=3, shape=16) + theme(legend.key = element_blank())
+=======
+p2 + geom_point(size=3, shape=16)
+>>>>>>> e6c4eefc10b5e70115f8e58358f3136d05e7d9e9
 ggsave("6_ExampleC.pdf", width=5, height=5)
 
 # # plot with one slope per gene with one tissue highlighted
