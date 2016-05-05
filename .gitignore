@@ -1,0 +1,9 @@
+*.xlsx
+*.pdf
+.Rhistory
+._README.md
+
+0_SETUP.R
+
+*.DS_Store
+*._.DS_Store
