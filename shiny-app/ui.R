@@ -21,10 +21,10 @@ shinyUI(fluidPage(
 
     tabsetPanel(
         tabPanel("Summary",
-            h3("Summary of all Proteins"),
+            h3("Summary of all Genes"),
             p("Correlations between the Protein Expression and the predicted Protein Expression"),
             plotOutput("cors.hist", width = "75%"),
-            sliderInput("summary-avail", "Number of Available Observations per Protein:",
+            sliderInput("summary-avail", "Number of Available Observations per Gene:",
                         min = 2, max = 12, value = c(8, 12),
                         width = "40%"
             )
@@ -32,7 +32,7 @@ shinyUI(fluidPage(
         tabPanel("Protein Specific", sidebarLayout(
             sidebarPanel(
                 width = 0.25 * 12,
-                h4("Protein Selection"),
+                h4("Gene Selection"),
                 selectInput(
                     "prot-sort",
                     label = "Sorting:",
@@ -52,7 +52,7 @@ shinyUI(fluidPage(
             ),
             mainPanel(
                 width = 0.75 * 12,
-                h3("Protein ", textOutput("prot.name", container = em)),
+                h3("Gene ", textOutput("prot.name", container = em)),
                 helpText(textOutput("gene.stat")),
                 splitLayout(
                     div(
