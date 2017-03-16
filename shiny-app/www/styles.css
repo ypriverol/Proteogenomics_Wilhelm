@@ -1,0 +1,11 @@
+.fa.right {
+    float: right;
+}
+
+
+.form-group.shiny-input-container > div {
+    display: inline-block;
+    vertical-align: middle;
+    width: 15em;
+    height: 2.5em;
+}

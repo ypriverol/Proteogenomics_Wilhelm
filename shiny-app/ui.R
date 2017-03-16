@@ -7,24 +7,25 @@
 
 library(shiny)
 
-## Load data
-prot.summary.data <- readRDS("data-cache/prot-summary-data.rds")
-cor.split <- cut(prot.summary.data$cor, breaks = 8, right = FALSE, include.lowest = T)
-cor.split <- factor(cor.split, levels = rev(levels(cor.split)))
-levels(cor.split) <- sub("^[\\(\\[]([-\\.0-9]{1,5}).+$", "≥ \\1", levels(cor.split))
-cor.ord <- with(prot.summary.data, order(cor.split, -avail.both, -cor))
-prots.by.cor <- split(prot.summary.data$prot[cor.ord], cor.split[cor.ord])
-
-
 shinyUI(fluidPage(
+    tags$head(
+        tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
+        tags$script(
+            '
+            Shiny.addCustomMessageHandler("scrollCallback", function (msg) {
+                window.scrollTo(0, 0);
+            });'
+        )
+    ),
+
     titlePanel("Alleluia"),
 
     tabsetPanel(
         tabPanel("Summary",
             h3("Summary of all Genes"),
-            p("Correlations between the Protein Expression and the predicted Protein Expression"),
+            p("Correlations between the measured protein expression and the predicted protein expression"),
             plotOutput("cors.hist", width = "75%"),
-            sliderInput("summary-avail", "Number of Available Observations per Gene:",
+            sliderInput("summary-avail", "Number of available observations per gene:",
                         min = 2, max = 12, value = c(8, 12),
                         width = "40%"
             )
@@ -33,21 +34,18 @@ shinyUI(fluidPage(
             sidebarPanel(
                 width = 0.25 * 12,
                 h4("Gene Selection"),
-                selectInput(
-                    "prot-sort",
-                    label = "Sorting:",
+                selectizeInput(
+                    "gene-sort",
+                    label = "Group by:",
                     choices = c(
                         "Correlation" = "cor",
                         "# of samples" = "nr-samples",
                         "Alphanumeric" = "abc"
                     )
                 ),
-                selectInput(
-                    "prot",
-                    label = NULL,
-                    size = 30,
-                    selectize = FALSE,
-                    choices = prots.by.cor
+                div(
+                    id = "gene-links-container",
+                    prots.by.cor.links$containers
                 )
             ),
             mainPanel(
@@ -69,7 +67,7 @@ shinyUI(fluidPage(
                 ),
                 splitLayout(
                     div(
-                        h4("Predicted vs. Measured Protein Expression"),
+                        h4("Measured vs. Predicted Protein Expression"),
                         plotOutput("prediction", width = "100%"),
                         style = "text-align: center;"
                     ),
