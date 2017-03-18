@@ -1,6 +1,3 @@
-PLOT_POINT_SIZE <- ggplot2::rel(2)
-PLOT_LINE_WIDTH <- ggplot2::rel(.7)
-PLOT_TEXT_SIZE <- ggplot2::rel(2)
 
 ggplot_theme <- function(base_size = 12, base_family = "") {
     requireNamespace("ggplot2", quietly = TRUE)

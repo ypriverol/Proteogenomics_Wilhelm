@@ -10,95 +10,132 @@ library(ggplot2)
 library(dplyr)
 source("ggplot-utils.R")
 
+OUT_IMG_PPI <- 144
+OUT_IMG_BASESIZE <- 12
+PLOT_POINT_SIZE <- ggplot2::rel(3)
+PLOT_LINE_WIDTH <- ggplot2::rel(.7)
+PLOT_TEXT_SIZE <- ggplot2::rel(3)
+
+
 ## Load individual data
-# prot.summary.data <- readRDS("data-cache/prot-summary-data.rds")
-prot.individual.data <- readRDS("data-cache/prot-individual-data.rds")
+# gene.name.map <- readRDS("data-cache/gene-names.rds")
+gene.individual.data <- readRDS("data-cache/gene-individual-data.rds")
 
-## Create list of genes, split by # of available observations
-avail.ord <- with(prot.summary.data, order(avail.both, -cor, prot))
+## Make gene search more efficient
+gene.search.choices <- gene.summary.data %>%
+    arrange(desc(avail.both), desc(cor)) %>%
+    mutate(
+        avail.both = as.character(avail.both),
+        cor = sprintf("%.2f", cor)
+    ) %>%
+    rename(
+        availBoth = avail.both,
+        geneName = gene.name
+    ) %>%
+    as.data.frame()
 
-prots.by.avail <- with(prot.summary.data,
-                       split(prot[avail.ord],
-                             factor(avail.both[avail.ord],
-                                    levels = rev(seq(min(avail.both), max(avail.both))))))
+##
+## Color-scheme
+##
+color.palette <- c(
+    "Testis" = "#56B4E9",
+    "Stomach" = "#0072B2",
+    "Salivary gland" = "#001833",
+    "Kidney" = "#F0E442",
+    "Oesophagus" = "#E69F00",
+    "Adrenal gland" = "#D55E00",
+    "Spleen" = "#747311",
+    "Prostate" = "#009E73",
+    "Pancreas" = "#2D7411",
+    "Ovary" = "#2A4113",
+    "Uterus" = "#CC79A7",
+    "Thyroid gland" = "#742343"
+)
 
-prots.by.avail$`0` <- NULL
-prots.by.avail$`1` <- NULL
-
-## Create list of genes, split by common prefix
-prots.by.alpha <- split(prot.summary.data$prot, substr(prot.summary.data$prot, 1, 11))
-
-## Pre-compute the links groups
-prots.by.avail.links <- create.group.containers(prots.by.avail)
-prots.by.alpha.links <- create.group.containers(prots.by.alpha)
-
-## States of current gene list
-MAX_NR_GENE_GROUPS <- 30
-current.grouping <- prots.by.cor.links
-current.grouping.plain <- prots.by.cor
-current.group.observers <- NULL
+## Pre-render legend
+legend.plot <- data.frame(
+    tissue = names(color.palette),
+    col = rep(c(0, 1), times = 6),
+    row = rev(rep(seq_len(length(color.palette) %/% 2L), each = 2))
+) %>%
+    ggplot(aes(x = col, y = row, color = tissue, label = tissue)) +
+    geom_point(size = PLOT_POINT_SIZE, shape = 1) +
+    geom_point(size = PLOT_POINT_SIZE, alpha = .4) +
+    geom_text(size = PLOT_TEXT_SIZE, hjust = 0, nudge_x = .1) +
+    scale_color_manual(values = color.palette, guide = "none") +
+    # scale_x_continuous(expand = c(0, 0), limits = c(-.8, 2)) +
+    coord_cartesian(xlim = c(-0.5, 2), ylim = c(-1, 8)) +
+    theme_void() +
+    theme(
+        plot.background = ggplot2::element_rect(fill = NA, color = NA)
+    )
+# print(legend.plot)
+# ggsave("www/legend.png", width = 3.5, height = 3, dpi = 300, bg = "transparent")
 
 ##
 ##
 ##
 renderIndividualPlots <- function(selected.gene, output) {
-    output$prot.name <- renderText({selected.gene})
+    output$gene.name <- renderText({selected.gene})
 
     output$gene.stat = renderText({
-        indiv.stat <- prot.individual.data[[selected.gene]]
+        indiv.stat <- gene.individual.data[[selected.gene]]
         sprintf("Correlation = %.2f (based on %d available pairs)", indiv.stat$info["cor"],
                 indiv.stat$info["avail.both"])
     })
 
     output$scatter <- renderPlot({
-        indiv.stat <- prot.individual.data[[selected.gene]]
+        indiv.stat <- gene.individual.data[[selected.gene]]
         max.xy <- with(indiv.stat$data, c(max(mrna, na.rm = TRUE), max(prot, na.rm = TRUE)))
 
-        ggplot(indiv.stat$data, aes(x = mrna, y = prot)) +
+        ggplot(indiv.stat$data, aes(x = mrna, y = prot, color = tissue)) +
             geom_abline(intercept = 0, slope = indiv.stat$info["medr"],
                         linetype = "dashed", size = PLOT_LINE_WIDTH,
                         color = "#0072B2") +
-            geom_point(size = PLOT_POINT_SIZE, color = "#0072B2", shape = 1) +
-            geom_point(size = PLOT_POINT_SIZE, color = "#0072B2", alpha = .4) +
+            geom_point(size = PLOT_POINT_SIZE, shape = 1) +
+            geom_point(size = PLOT_POINT_SIZE, alpha = .4) +
+            scale_color_manual(values = color.palette, guide = "none") +
             xlab("miRNA Expression") +
             ylab("Protein Expression") +
             coord_cartesian(xlim = c(0, max.xy[1]), ylim = c(0, max.xy[2])) +
-            ggplot_theme(base_size = 16)
-    })
+            ggplot_theme(base_size = OUT_IMG_BASESIZE)
+    }, res = OUT_IMG_PPI)
 
     output$ratio <- renderPlot({
-        indiv.stat <- prot.individual.data[[selected.gene]]
+        indiv.stat <- gene.individual.data[[selected.gene]]
 
-        ggplot(indiv.stat$data, aes(x = tissue, y = ratio)) +
+        ggplot(indiv.stat$data, aes(x = tissue, y = ratio, color = tissue)) +
             geom_abline(intercept = indiv.stat$info["medr"], slope = 0,
                         linetype = "dashed", size = PLOT_LINE_WIDTH,
                         color = "#0072B2") +
-            geom_point(size = PLOT_POINT_SIZE, color = "#0072B2", shape = 1) +
-            geom_point(size = PLOT_POINT_SIZE, color = "#0072B2", alpha = .4) +
+            geom_point(size = PLOT_POINT_SIZE, shape = 1) +
+            geom_point(size = PLOT_POINT_SIZE, alpha = .4) +
+            scale_color_manual(values = color.palette, guide = "none") +
             xlab("Tissue") +
             ylab("Ratio protein/miRNA") +
-            ggplot_theme(base_size = 16) +
+            ggplot_theme(base_size = OUT_IMG_BASESIZE) +
             theme(
                 axis.text.x = element_text(angle = 50, hjust = 1, vjust = 1)
             )
-    })
+    }, res = OUT_IMG_PPI)
 
     output$prediction <- renderPlot({
-        indiv.stat <- prot.individual.data[[selected.gene]]
+        indiv.stat <- gene.individual.data[[selected.gene]]
         good.points <- with(indiv.stat$data, !is.na(prot) & !is.na(pred.prot))
         max.xy <- with(indiv.stat$data[good.points, ], max(c(prot, pred.prot), na.rm = TRUE))
 
-        ggplot(indiv.stat$data, aes(y = prot, x = pred.prot)) +
+        ggplot(indiv.stat$data, aes(y = prot, x = pred.prot, color = tissue)) +
             geom_abline(slope = 1,
                         linetype = "dotted", size = PLOT_LINE_WIDTH,
                         color = "#333333") +
-            geom_point(size = PLOT_POINT_SIZE, color = "#D55E00", shape = 1) +
-            geom_point(size = PLOT_POINT_SIZE, color = "#D55E00", alpha = .4) +
+            geom_point(size = PLOT_POINT_SIZE, shape = 1) +
+            geom_point(size = PLOT_POINT_SIZE, alpha = .4) +
+            scale_color_manual(values = color.palette, guide = "none") +
             ylab("Protein Expression") +
             scale_x_continuous("Predicted Protein Expression") +
             coord_fixed(xlim = c(0, max.xy), ylim = c(0, max.xy)) +
-            ggplot_theme(base_size = 16)
-    })
+            ggplot_theme(base_size = OUT_IMG_BASESIZE)
+    }, res = OUT_IMG_PPI)
 }
 
 ##
@@ -106,67 +143,55 @@ renderIndividualPlots <- function(selected.gene, output) {
 ##
 
 shinyServer(function(input, output, session) {
-    lapply(seq_len(MAX_NR_GENE_GROUPS), function (i) {
-        observeEvent(input[[sprintf("gene-group-%d", i)]], {
-            group.attribs <- current.grouping$containers$children[[i]]$children[[2]]$attribs
+    updateSelectizeInput(
+        session,
+        'lookup-gene',
+        server = TRUE,
+        choices = gene.search.choices
+    )
 
-            # Toggle collapsed state
-            current.grouping$containers$children[[i]]$children[[2]]$attribs$collapsed <<- !current.grouping$containers$children[[i]]$children[[2]]$attribs$collapsed
-            if (!isTRUE(group.attribs$loaded)) {
-                current.grouping$containers$children[[i]]$children[[2]]$attribs$loaded <<- TRUE
-                insertUI(
-                    sprintf("#%s", group.attribs$id),
-                    where = "afterBegin",
-                    ui = current.grouping$gene.links[[i]]
-                )
-            }
-
-            if (!isTRUE(current.grouping$containers$children[[i]]$children[[2]]$attribs$collapsed)) {
-                if (!is.null(current.group.observers)) {
-                    lapply(current.group.observers, function(obs) {
-                        obs$destroy()
-                    })
-                }
-                current.group.observers <<- lapply(seq_along(current.grouping$gene.links[[i]]$children), function(j) {
-                    observeEvent(input[[sprintf("gene-id-%d-%d", i, j)]], {
-                        session$sendCustomMessage(type = "scrollCallback", 1)
-                        renderIndividualPlots(current.grouping.plain[[i]][j], output)
-                    })
-                })
-            }
+    ## Reacte to link-clicks
+    reactive.vals <- reactiveValues(
+        sel.gene = gene.search.choices$gene[1L]
+    )
+    lapply(selected.example.genes, function (gene) {
+        observeEvent(input[[sprintf("gene-sel-%s", gene)]], {
+            reactive.vals$sel.gene <- gene
+            updateSelectizeInput(
+                session,
+                'lookup-gene',
+                selected = NULL
+            )
         })
     })
 
+    ## Determine the gene selected in the search box or by a click on a link
     observe({
-        current.grouping <<- switch(input$`gene-sort`,
-                                    "nr-samples" = prots.by.avail.links,
-                                    "cor" = prots.by.cor.links,
-                                    prots.by.alpha.links)
-
-
-        current.grouping.plain <<- switch(input$`gene-sort`,
-                                          "nr-samples" = prots.by.avail,
-                                          "cor" = prots.by.cor,
-                                          prots.by.alpha)
-
-        # Set all containers to "not loaded" and "collapsed"
-        current.grouping$containers$children <- lapply(current.grouping$containers$children, function (node) {
-            node$children[[2L]]$attribs$loaded <- FALSE
-            node$children[[2L]]$attribs$collapsed <- TRUE
-            return(node)
-        })
-
-
-        removeUI("#gene-links", session = session, immediate = TRUE)
-        insertUI(
-            "#gene-links-container",
-            where = "afterBegin",
-            ui = current.grouping$containers
-        )
+        dd.sel <- input$`lookup-gene`
+        if (nchar(dd.sel) == 0L || is.null(dd.sel)) {
+            dd.sel <- gene.search.choices$gene[1L]
+        }
+        reactive.vals$sel.gene <- dd.sel
     })
+    # selected.gene <- reactive({
+    #     dd.sel <- input$`lookup-gene`
+    #     if (nchar(dd.sel) == 0L || is.null(dd.sel)) {
+    #         dd.sel <- gene.search.choices$gene[1L]
+    #     }
+    #     return(dd.sel)
+    # })
+
+    ##
+    observe({
+        # sel.gene <- selected.gene()
+        sel.gene <- reactive.vals$sel.gene
+        renderIndividualPlots(sel.gene, output)
+    })
+
+    output$legend <- renderPlot(legend.plot, res = OUT_IMG_PPI)
 
     output$cors.hist <- renderPlot({
-        fd <- filter(prot.summary.data,
+        fd <- filter(gene.summary.data,
                avail.both >= input$`summary-avail`[1L],
                avail.both <= input$`summary-avail`[2L])
 
@@ -176,9 +201,9 @@ shinyServer(function(input, output, session) {
             scale_x_continuous("Correlation", expand = c(.03, 0)) +
             scale_y_continuous("Count", expand = c(0, 0)) +
             coord_cartesian(xlim = c(-1, 1)) +
-            ggplot_theme(base_size = 16)
-    })
+            ggplot_theme(base_size = OUT_IMG_BASESIZE)
+    }, res = OUT_IMG_PPI)
 
     ## The first gene that is shown is picked at random
-    renderIndividualPlots(sample(prot.summary.data$prot, 1), output)
+    renderIndividualPlots(sample(gene.summary.data$gene, 1), output)
 })

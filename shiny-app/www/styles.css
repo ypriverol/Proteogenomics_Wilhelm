@@ -1,11 +1,85 @@
-.fa.right {
+#select-gene-nav .fa {
     float: right;
+    line-height: 1.1em;
 }
 
+.hide-help .help-block {
+    visibility: hidden;
+    color: #fff;
+}
 
-.form-group.shiny-input-container > div {
+/*==============================================================================
+ *
+ * Selectize theme for gene selection
+ *
+ =============================================================================*/
+
+/* Remove "arrow down" on the right and replace by search icon */
+.selectize-control.single .selectize-input:after {
+    border: none;
+    content: "\f002";
     display: inline-block;
-    vertical-align: middle;
-    width: 15em;
-    height: 2.5em;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: 1.33em;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: absolute;
+    top: 30%;
+    right: 25px;
+    color: #888888;
+}
+
+.gene-item {
+    color: #303030;
+    font-size: 0.9em;
+    margin: 3px 0;
+    line-height: 1.4em;
+}
+
+.selectize-dropdown .active,
+#select-gene-nav .action-button:hover {
+    color: #23527c;
+}
+
+.selectize-dropdown [data-selectable] .highlight {
+    background: #7da8d0;
+    background: rgba(125, 168, 208, 0.2);
+    border-radius: 1px;
+}
+
+.gene-symbol {
+    font-weight: bold;
+}
+.gene-ensembl {
+    padding-left: 3px;
+    font-size: 0.9em;
+}
+
+.gene-name {
+    font-size: 0.9em;
+    opacity: 0.5;
+    display: block;
+}
+
+.gene-stats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.9em;
+}
+
+.gene-stats li {
+    display: inline;
+    padding: 0;
+}
+
+.gene-stats li::after {
+    content: ' · ';
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.gene-stats li:last-of-type::after {
+    content: '';
 }

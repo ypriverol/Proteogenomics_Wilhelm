@@ -3,9 +3,11 @@
 ## Pre-compute the values for the graphical output
 ##
 ################################################################################
+library(dplyr)
 library(tibble)
 
-load("../data//3_Mats.RData", envir = environment())
+load("../../final/3_Mats.RData", envir = environment())
+gene.name.map <- readRDS("../data-cache/gene-names.rds")
 
 tissue.names <- c(
     testis = "Testis",
@@ -23,7 +25,9 @@ tissue.names <- c(
 )
 tissue.names <- factor(tissue.names, levels = tissue.names)
 
-indiv.data <- lapply(proteins, function (p) {
+gene.names.for.prots <- with(gene.name.map, SYMBOL[match(proteins, ENSEMBL)])
+
+indiv.data <- lapply(proteins[!is.na(gene.names.for.prots)], function (p) {
     ind <- match(p, proteins)
 
     ratio <- with(mats, prots[ind, ] / mRNAs[ind, ])
@@ -41,9 +45,6 @@ indiv.data <- lapply(proteins, function (p) {
         data = ret.dat,
         info = with(ret.dat, c(
             medr = medr,
-            # cor.pred = with(ret.dat, cor(pred.prot, prot,
-            #                              use = "pairwise.complete.obs",
-            #                              method = "spearman")),
             cor = cor(mrna, prot,
                       use = "pairwise.complete.obs",
                       method = "spearman"),
@@ -54,15 +55,21 @@ indiv.data <- lapply(proteins, function (p) {
     )
 })
 
-names(indiv.data) <- proteins
 
-saveRDS(indiv.data, "data-cache/prot-individual-data.rds")
+names(indiv.data) <- na.omit(gene.names.for.prots)
 
+saveRDS(indiv.data, "../data-cache/gene-individual-data.rds")
 
 summary.data <- sapply(indiv.data, function (id) {
     c(id$info["avail.both"], id$info["cor"])
 })
 
-summary.data <- rownames_to_column(as.data.frame(t(summary.data)), var = "prot")
+summary.data <- rownames_to_column(as.data.frame(t(summary.data)), var = "gene") %>%
+    left_join(select(
+        gene.name.map,
+        gene = SYMBOL,
+        ensembl = ENSEMBL,
+        gene.name = GENENAME
+    ), by = "gene")
 
-saveRDS(summary.data, "data-cache/prot-summary-data.rds")
+saveRDS(summary.data, "../data-cache/gene-summary-data.rds")

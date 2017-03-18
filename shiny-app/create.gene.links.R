@@ -11,8 +11,8 @@ create.group.containers <- function (genes) {
                 class = "panel-title",
                 actionLink(
                     sprintf("gene-group-%d", seq),
-                    label = sprintf("%s (G = %d)", name, length(gene.group)),
-                    icon = icon("caret-down", class = "right"),
+                    label = sprintf("%s", name),
+                    icon = icon("arrow-circle-right", class = "right"),
                     href = sprintf("#%s", group.id),
                     `data-toggle` = "collapse",
                     `data-parent` = sprintf("#%s", gene.links.container.id)
