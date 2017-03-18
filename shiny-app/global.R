@@ -5,12 +5,12 @@ source("create.gene.links.R", local = TRUE)
 gene.summary.data <- readRDS("data-cache/gene-summary-data.rds")
 
 selected.example.genes <- c(
-    "FN3K",
-    "SAMHD1",
-    "ALDH2",
-    "CORO1B",
-    "PHYHD1",
-    "IDH2"
+    "FN3K", # cor = 0.89
+    "CRYL1", # cor = 0.41
+    "TBCD", # cor = 0.03
+    "PRDX5", # cor = 0
+    "SRSF1", # cor = -0.41
+    "HNRNPH2" # cor = -0.75
 )
 
 

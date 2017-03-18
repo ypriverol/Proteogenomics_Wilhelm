@@ -84,6 +84,11 @@ renderIndividualPlots <- function(selected.gene, output) {
                 indiv.stat$info["avail.both"])
     })
 
+    output$gene.cor.1 <- output$gene.cor.2 <- renderText({
+        indiv.stat <- gene.individual.data[[selected.gene]]
+        sprintf("%.2f", indiv.stat$info["cor"])
+    })
+
     output$scatter <- renderPlot({
         indiv.stat <- gene.individual.data[[selected.gene]]
         max.xy <- with(indiv.stat$data, c(max(mrna, na.rm = TRUE), max(prot, na.rm = TRUE)))
@@ -168,10 +173,9 @@ shinyServer(function(input, output, session) {
     ## Determine the gene selected in the search box or by a click on a link
     observe({
         dd.sel <- input$`lookup-gene`
-        if (nchar(dd.sel) == 0L || is.null(dd.sel)) {
-            dd.sel <- gene.search.choices$gene[1L]
+        if (!is.null(dd.sel) & nchar(dd.sel) > 0L) {
+            reactive.vals$sel.gene <- dd.sel
         }
-        reactive.vals$sel.gene <- dd.sel
     })
     # selected.gene <- reactive({
     #     dd.sel <- input$`lookup-gene`
