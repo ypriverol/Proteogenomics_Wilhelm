@@ -82,7 +82,10 @@ renderIndividualPlots <- function(selected.gene, output) {
     prot.limits <- c(0, with(indiv.stat$data, max(c(prot, pred.prot), na.rm = TRUE)))
     mrna.limits <- c(0, max(indiv.stat$data$mrna, na.rm = TRUE))
 
-    output$gene.name <- renderText({selected.gene})
+    output$gene.name <- renderText(selected.gene)
+    output$gene.accnr <- renderText({
+        with(gene.summary.data, ensembl[gene == selected.gene])
+    })
 
     output$gene.stat = renderText({
         sprintf("Correlation = %.2f (based on %d available pairs)", indiv.stat$info["cor"],

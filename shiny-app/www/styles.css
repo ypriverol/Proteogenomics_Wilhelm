@@ -3,7 +3,7 @@
     line-height: 1.1em;
 }
 
-h4 {
+.plot-panel h4 {
     text-align: center;
 }
 
@@ -21,6 +21,15 @@ h4 {
 }
 .cor-output::after {
     content: ')';
+}
+
+.gene-name-title {
+    font-weight: bold;
+}
+.acc-nr {
+    color: #888888;
+    font-size: 0.8em;
+    font-weight: normal;
 }
 
 /*==============================================================================

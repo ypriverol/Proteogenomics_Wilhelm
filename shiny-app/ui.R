@@ -7,14 +7,16 @@
 
 library(shiny)
 
-span.cor <- function(..., class) {
-    el <- span(
-        ...,
-        class = paste(class, "cor-output")
-    )
-    print(el)
-    return(el)
+tag.class <- function (add.class, tag = span) {
+    return(function(..., class = "") {
+        el <- tag(
+            ...,
+            class = paste(add.class, class)
+        )
+        return(el)
+    })
 }
+
 
 shinyUI(fluidPage(
     tags$head(
@@ -68,13 +70,16 @@ shinyUI(fluidPage(
             ),
             mainPanel(
                 width = 0.75 * 12,
-                h3("Gene ", textOutput("gene.name", container = em)),
+                h3(
+                    "Gene ",
+                    textOutput("gene.name", container = tag.class("gene-name-title", em)),
+                    textOutput("gene.accnr", container = tag.class("acc-nr"))),
                 helpText(textOutput("gene.stat")),
                 splitLayout(
                     div(
                         h4(
                             "Measured Levels",
-                            textOutput("gene.cor.1", container = span.cor)
+                            textOutput("gene.cor.1", container = tag.class("cor-output"))
                         ),
                         helpText("The line depicts the predicted protein expression by $$\\hat{\\text{protein}}_i = \\hat{r} \\cdot \\text{miRNA}_i$$"),
                         plotOutput("scatter", width = "100%")
@@ -82,14 +87,14 @@ shinyUI(fluidPage(
                     div(
                         h4(
                             "Predictions",
-                            textOutput("gene.cor.2", container = span.cor)
+                            textOutput("gene.cor.2", container = tag.class("cor-output"))
                         ),
                         helpText("The line depicts the predicted protein expression by $$\\hat{\\text{protein}}_i = \\hat{r} \\cdot \\text{mRNA}_i$$"),
                         plotOutput("prediction", width = "100%"),
                         style = "text-align: center;",
                         class = "hide-help"
                     ),
-                    cellArgs = list(style = "padding: 1em")
+                    cellArgs = list(style = "padding: 1em", class = "plot-panel")
                 ),
                 splitLayout(
                     div(
