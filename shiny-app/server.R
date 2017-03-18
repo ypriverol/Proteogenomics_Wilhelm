@@ -76,23 +76,24 @@ legend.plot <- data.frame(
 ##
 ##
 renderIndividualPlots <- function(selected.gene, output) {
+    indiv.stat <- gene.individual.data[[selected.gene]]
+    good.points <- with(indiv.stat$data, !is.na(prot) & !is.na(pred.prot))
+    indiv.stat$data <- indiv.stat$data[good.points, ]
+    prot.limits <- c(0, with(indiv.stat$data, max(c(prot, pred.prot), na.rm = TRUE)))
+    mrna.limits <- c(0, max(indiv.stat$data$mrna, na.rm = TRUE))
+
     output$gene.name <- renderText({selected.gene})
 
     output$gene.stat = renderText({
-        indiv.stat <- gene.individual.data[[selected.gene]]
         sprintf("Correlation = %.2f (based on %d available pairs)", indiv.stat$info["cor"],
                 indiv.stat$info["avail.both"])
     })
 
     output$gene.cor.1 <- output$gene.cor.2 <- renderText({
-        indiv.stat <- gene.individual.data[[selected.gene]]
         sprintf("%.2f", indiv.stat$info["cor"])
     })
 
     output$scatter <- renderPlot({
-        indiv.stat <- gene.individual.data[[selected.gene]]
-        max.xy <- with(indiv.stat$data, c(max(mrna, na.rm = TRUE), max(prot, na.rm = TRUE)))
-
         ggplot(indiv.stat$data, aes(x = mrna, y = prot, color = tissue)) +
             geom_abline(intercept = 0, slope = indiv.stat$info["medr"],
                         linetype = "dashed", size = PLOT_LINE_WIDTH,
@@ -100,15 +101,13 @@ renderIndividualPlots <- function(selected.gene, output) {
             geom_point(size = PLOT_POINT_SIZE, shape = 1) +
             geom_point(size = PLOT_POINT_SIZE, alpha = .4) +
             scale_color_manual(values = color.palette, guide = "none") +
-            xlab("miRNA Expression") +
+            xlab("mRNA Expression") +
             ylab("Protein Expression") +
-            coord_cartesian(xlim = c(0, max.xy[1]), ylim = c(0, max.xy[2])) +
+            coord_cartesian(xlim = mrna.limits, ylim = prot.limits) +
             ggplot_theme(base_size = OUT_IMG_BASESIZE)
     }, res = OUT_IMG_PPI)
 
     output$ratio <- renderPlot({
-        indiv.stat <- gene.individual.data[[selected.gene]]
-
         ggplot(indiv.stat$data, aes(x = tissue, y = ratio, color = tissue)) +
             geom_abline(intercept = indiv.stat$info["medr"], slope = 0,
                         linetype = "dashed", size = PLOT_LINE_WIDTH,
@@ -117,7 +116,7 @@ renderIndividualPlots <- function(selected.gene, output) {
             geom_point(size = PLOT_POINT_SIZE, alpha = .4) +
             scale_color_manual(values = color.palette, guide = "none") +
             xlab("Tissue") +
-            ylab("Ratio protein/miRNA") +
+            ylab("Ratio protein/mRNA") +
             ggplot_theme(base_size = OUT_IMG_BASESIZE) +
             theme(
                 axis.text.x = element_text(angle = 50, hjust = 1, vjust = 1)
@@ -125,10 +124,6 @@ renderIndividualPlots <- function(selected.gene, output) {
     }, res = OUT_IMG_PPI)
 
     output$prediction <- renderPlot({
-        indiv.stat <- gene.individual.data[[selected.gene]]
-        good.points <- with(indiv.stat$data, !is.na(prot) & !is.na(pred.prot))
-        max.xy <- with(indiv.stat$data[good.points, ], max(c(prot, pred.prot), na.rm = TRUE))
-
         ggplot(indiv.stat$data, aes(y = prot, x = pred.prot, color = tissue)) +
             geom_abline(slope = 1,
                         linetype = "dotted", size = PLOT_LINE_WIDTH,
@@ -138,7 +133,7 @@ renderIndividualPlots <- function(selected.gene, output) {
             scale_color_manual(values = color.palette, guide = "none") +
             ylab("Protein Expression") +
             scale_x_continuous("Predicted Protein Expression") +
-            coord_fixed(xlim = c(0, max.xy), ylim = c(0, max.xy)) +
+            coord_fixed(xlim = prot.limits, ylim = prot.limits) +
             ggplot_theme(base_size = OUT_IMG_BASESIZE)
     }, res = OUT_IMG_PPI)
 }

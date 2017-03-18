@@ -73,7 +73,7 @@ shinyUI(fluidPage(
                 splitLayout(
                     div(
                         h4(
-                            "Measured Expression Levels",
+                            "Measured Levels",
                             textOutput("gene.cor.1", container = span.cor)
                         ),
                         helpText("The line depicts the predicted protein expression by $$\\hat{\\text{protein}}_i = \\hat{r} \\cdot \\text{miRNA}_i$$"),
@@ -81,10 +81,10 @@ shinyUI(fluidPage(
                     ),
                     div(
                         h4(
-                            "Measured vs. Predicted Protein Expression",
+                            "Predictions",
                             textOutput("gene.cor.2", container = span.cor)
                         ),
-                        helpText("The line depicts the predicted protein expression by $$\\hat{\\text{protein}}_i = \\hat{r} \\cdot \\text{miRNA}_i$$"),
+                        helpText("The line depicts the predicted protein expression by $$\\hat{\\text{protein}}_i = \\hat{r} \\cdot \\text{mRNA}_i$$"),
                         plotOutput("prediction", width = "100%"),
                         style = "text-align: center;",
                         class = "hide-help"
@@ -93,8 +93,8 @@ shinyUI(fluidPage(
                 ),
                 splitLayout(
                     div(
-                        h4("Ratio of Protein to miRNA"),
-                        withMathJax(helpText("The line depicts the median ratio: $$\\hat{r} = \\operatorname{Med}_{i = 1, \\dotsc, n} (\\text{protein}_i / \\text{miRNA}_i)$$")),
+                        h4("Ratio of Protein to mRNA"),
+                        withMathJax(helpText("The line depicts the median ratio: $$\\hat{r} = \\operatorname{Med}_{i = 1, \\dotsc, n} (\\text{protein}_i / \\text{mRNA}_i)$$")),
                         plotOutput("ratio", width = "100%")
                     ),
                     div(
