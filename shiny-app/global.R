@@ -1,5 +1,4 @@
 library(shiny)
-source("create.gene.links.R", local = TRUE)
 
 ## Load summary data
 gene.summary.data <- readRDS("data-cache/gene-summary-data.rds")
@@ -13,5 +12,10 @@ selected.example.genes <- c(
     "HNRNPH2" # cor = -0.75
 )
 
+selected.example.genes.with.cor <- with(gene.summary.data, {
+    with(gene.summary.data[match(selected.example.genes, gene), ],
+         sprintf("%s (Correlation = %.2f)", gene, cor))
+})
 
+names(selected.example.genes.with.cor) <- selected.example.genes
 

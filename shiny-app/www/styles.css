@@ -32,6 +32,19 @@
     font-weight: normal;
 }
 
+#about-tab li span:before,
+#about-tab li span:after {
+    color: inherit;
+    text-decoration: none;
+}
+#about-tab li span:before {
+    content: ' (';
+}
+
+#about-tab li span:after {
+    content: ')';
+}
+
 /*==============================================================================
  *
  * Selectize theme for gene selection

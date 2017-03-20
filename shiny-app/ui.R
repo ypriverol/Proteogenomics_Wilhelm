@@ -43,14 +43,15 @@ shinyUI(fluidPage(
                 div(
                     class = "list-group",
                     id = "select-gene-nav",
-                    lapply(selected.example.genes, function (gene) {
+                    mapply(function (gene.desc, gene) {
                         actionLink(
                             sprintf("gene-sel-%s", gene),
-                            label = gene,
+                            label = gene.desc,
                             icon = icon("arrow-circle-right", class = "fa-lg"),
                             class = "list-group-item"
                         )
-                    })
+                    }, selected.example.genes.with.cor, selected.example.genes,
+                    SIMPLIFY = FALSE)
                 ),
                 selectizeInput(
                     "lookup-gene",
@@ -110,6 +111,24 @@ shinyUI(fluidPage(
                     cellArgs = list(style = "padding: 1em")
                 )
             )
+        )),
+        tabPanel("About", div(id = "about-tab",
+                 h3("About"),
+                 p("…"),
+                 h4("Authors"),
+                 tags$ul(
+                     tags$li("Gabriela Cohen-Freue",
+                             span(a("gcohen at stat.ubc.ca", href = "mailto:gcohen@stat.ubc.ca"))),
+                     tags$li("…")
+                 ),
+                 h4("Acknowledgement"),
+                 p(HTML(
+                     'This shiny app is maintained and developed by ',
+                     '<a href="mailto:d.kepplinger@stat.ubc.ca">David Kepplinger</a>,',
+                     'using some parts and inspirations from ',
+                     '<a href="http://neuroexpresso.org">neuroexpresso.org</a>',
+                     'by <a href="https://github.com/oganm/">Ogan Mancarci</a>.'
+                 ))
         ))
     )
 ))
