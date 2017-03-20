@@ -46,7 +46,7 @@ shinyUI(fluidPage(
                     mapply(function (gene.desc, gene) {
                         actionLink(
                             sprintf("gene-sel-%s", gene),
-                            label = gene.desc,
+                            label = HTML(gene.desc),
                             icon = icon("arrow-circle-right", class = "fa-lg"),
                             class = "list-group-item"
                         )

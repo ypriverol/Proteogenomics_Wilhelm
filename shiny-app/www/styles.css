@@ -45,6 +45,17 @@
     content: ')';
 }
 
+.action-button.list-group-item span {
+    font-size: 0.8em;
+}
+
+.action-button.list-group-item span:before {
+    content: ' (';
+}
+
+.action-button.list-group-item span:after {
+    content: ')';
+}
 /*==============================================================================
  *
  * Selectize theme for gene selection

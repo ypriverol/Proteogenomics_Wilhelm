@@ -5,7 +5,7 @@ gene.summary.data <- readRDS("data-cache/gene-summary-data.rds")
 
 selected.example.genes <- c(
     "FN3K", # cor = 0.89
-    "CRYL1", # cor = 0.41
+    "BTF3", # cor = 0.38
     "TBCD", # cor = 0.03
     "PRDX5", # cor = 0
     "SRSF1", # cor = -0.41
@@ -14,8 +14,6 @@ selected.example.genes <- c(
 
 selected.example.genes.with.cor <- with(gene.summary.data, {
     with(gene.summary.data[match(selected.example.genes, gene), ],
-         sprintf("%s (Correlation = %.2f)", gene, cor))
+         sprintf("%s <span>Correlation = %.2f</span>", gene, cor))
 })
-
-names(selected.example.genes.with.cor) <- selected.example.genes
 
