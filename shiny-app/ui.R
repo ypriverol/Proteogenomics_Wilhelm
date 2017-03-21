@@ -62,7 +62,9 @@ shinyUI(fluidPage(
             sliderInput("summary-avail", "Number of available tissues per gene:",
                         min = 2, max = 12, value = c(8, 12),
                         width = "40%"
-            )
+            ),
+            h4("Notes"),
+            p("…")
         ),
         tabPanel("Gene Plots", sidebarLayout(
             sidebarPanel(
