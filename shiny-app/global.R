@@ -8,6 +8,7 @@ selected.example.genes <- c(
     "BTF3", # cor = 0.38
     "TBCD", # cor = 0.03
     "PRDX5", # cor = 0
+    "UFC1", # cor = -0.02
     "SRSF1", # cor = -0.41
     "HNRNPH2" # cor = -0.75
 )

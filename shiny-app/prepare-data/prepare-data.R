@@ -58,7 +58,6 @@ indiv.data <- lapply(proteins[!is.na(gene.names.for.prots)], function (p) {
 
 names(indiv.data) <- na.omit(gene.names.for.prots)
 
-saveRDS(indiv.data, "../data-cache/gene-individual-data.rds")
 
 summary.data <- sapply(indiv.data, function (id) {
     c(id$info["avail.both"], id$info["cor"])
@@ -72,4 +71,10 @@ summary.data <- rownames_to_column(as.data.frame(t(summary.data)), var = "gene")
         gene.name = GENENAME
     ), by = "gene")
 
+
+summary.data <- filter(summary.data, avail.both > 0)
+indiv.data <- indiv.data[summary.data$gene]
+
+
+saveRDS(indiv.data, "../data-cache/gene-individual-data.rds")
 saveRDS(summary.data, "../data-cache/gene-summary-data.rds")

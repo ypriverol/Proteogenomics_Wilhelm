@@ -24,7 +24,7 @@ shinyUI(fluidPage(
         tags$script(type = "text/javascript", src = "search-genes.js")
     ),
 
-    titlePanel("Alleluia"),
+    titlePanel("Central Dogma"),
 
     tabsetPanel(
         tabPanel("Summary",
