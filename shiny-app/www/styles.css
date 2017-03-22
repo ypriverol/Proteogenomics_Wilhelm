@@ -3,6 +3,11 @@
     line-height: 1.1em;
 }
 
+.inline-math {
+    font-family: STIXGeneral-Italic;
+    font-size: 1.3em;
+}
+
 .plot-panel h4 {
     text-align: center;
 }
