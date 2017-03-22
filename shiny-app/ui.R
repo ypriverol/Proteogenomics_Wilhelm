@@ -154,7 +154,14 @@ shinyUI(fluidPage(
                             "Measured levels",
                             textOutput("gene.cor.1", container = tag.class("cor-output"))
                         ),
-                        helpText("The dashed line represents Wilhelm et al.'s method used to predict protein expression by $$\\hat{\\text{protein}}_{gt} = \\hat{r}_g \\cdot \\text{miRNA}_{gt}$$"),
+                        p(
+                            class = "subtitle",
+                            "
+                            The dashed line represents Wilhelm et al.'s method
+                            used to predict protein expression by
+                            $$\\hat{\\text{protein}}_{gt} = \\hat{r}_g \\cdot \\text{miRNA}_{gt}$$
+                        "
+                        ),
                         plotOutput("scatter", width = "100%")
                     ),
                     div(
@@ -162,7 +169,14 @@ shinyUI(fluidPage(
                             "Predictions",
                             textOutput("gene.cor.2", container = tag.class("cor-output"))
                         ),
-                        helpText("The dotted line depicts the predicted protein expression by $$\\hat{\\text{protein}}_{gt} = \\hat{r}_g \\cdot \\text{mRNA}_{gt}$$"),
+                        p(
+                            class = "subtitle",
+                            "
+                            The dashed line represents Wilhelm et al.'s method
+                            used to predict protein expression by
+                            $$\\hat{\\text{protein}}_{gt} = \\hat{r}_g \\cdot \\text{miRNA}_{gt}$$
+                            "
+                        ),
                         plotOutput("prediction", width = "100%"),
                         style = "text-align: center;",
                         class = "hide-help"

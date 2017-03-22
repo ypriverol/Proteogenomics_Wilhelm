@@ -3,6 +3,17 @@
     line-height: 1.1em;
 }
 
+.subtitle {
+    color: #737373;
+    white-space: normal;
+    text-align: left;
+}
+
+.hide-help .subtitle {
+    visibility: hidden;
+    color: #fff;
+}
+
 .inline-math {
     font-family: STIXGeneral-Italic;
     font-size: 1.3em;
@@ -10,11 +21,6 @@
 
 .plot-panel h4 {
     text-align: center;
-}
-
-.hide-help .help-block {
-    visibility: hidden;
-    color: #fff;
 }
 
 .cor-output::before {
