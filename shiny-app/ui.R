@@ -186,7 +186,11 @@ shinyUI(fluidPage(
                 splitLayout(
                     div(
                         h4("Ratio of Protein to mRNA"),
-                        withMathJax(helpText("The dashed line depicts the median ratio for this gene: $$\\hat{r}_g = \\operatorname{Med}_{t = 1, \\dotsc, n} (\\text{protein}_{gt} / \\text{mRNA}_{gt})$$")),
+                        withMathJax(p(
+                            class = "subtitle",
+                            "The dashed line depicts the median ratio for this gene:
+                            $$\\hat{r}_g = \\operatorname{Med}_{t = 1, \\dotsc, n} (\\text{protein}_{gt} / \\text{mRNA}_{gt})$$"
+                        )),
                         plotOutput("ratio", width = "100%")
                     ),
                     div(
