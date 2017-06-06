@@ -71,8 +71,8 @@ shinyUI(fluidPage(
               versus the observed protein values for each gene. It is interesting to see that Wilhelm el al.'s predictions are just a rescaled of the mRNA levels.
               "),
             h4("References"),
-            h5("Analysis and how to cite of this application"),
-            p("Fortelny, N, Overall, CM, Pavlidis, P. and Cohen Freue, GV. Can we predict protein from mRNA? Under review at Brief Communications Arising, Nature."),
+            h5("Analysis and how to cite this application"),
+            p("Fortelny, N, Overall, CM, Pavlidis, P. and Cohen Freue, GV. Can we predict protein from mRNA? Brief Communications Arising, Nature (In print)."),
             h5("Data and Methods"),
             p("Wilhelm, M. et al. Mass-spectrometry-based draft of the human proteome. Nature 509, 582–587 (2014)."),
             h4("Authors"),
