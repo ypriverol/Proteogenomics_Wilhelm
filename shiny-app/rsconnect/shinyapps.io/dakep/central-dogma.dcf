@@ -3,9 +3,9 @@ title: central-dogma
 account: dakep
 server: shinyapps.io
 appId: 165381
-bundleId: 854576
+bundleId: 922629
 url: https://dakep.shinyapps.io/central-dogma/
-when: 1496711305.59319
+when: 1501550877.11104
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: create.gene.links.R|data-cache/.DS_Store|prepare-data/match-gene-names.R|prepare-data/prepare-data.R

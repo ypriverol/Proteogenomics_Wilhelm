@@ -24,7 +24,7 @@ shinyUI(fluidPage(
         tags$script(type = "text/javascript", src = "search-genes.js")
     ),
 
-    titlePanel("Central Dogma"),
+    titlePanel("Can we predict protein from mRNA levels?"),
 
     tabsetPanel(
         tabPanel("About", div(
@@ -72,7 +72,7 @@ shinyUI(fluidPage(
               "),
             h4("References"),
             h5("Analysis and how to cite this application"),
-            p("Fortelny, N, Overall, CM, Pavlidis, P. and Cohen Freue, GV. Can we predict protein from mRNA? Brief Communications Arising, Nature (In print)."),
+            p("Fortelny, N, Overall, CM, Pavlidis, P. and Cohen Freue, GV. Can we predict protein from mRNA? Brief Communications Arising, Nature 547, E19–E20 (2017)."),
             h5("Data and Methods"),
             p("Wilhelm, M. et al. Mass-spectrometry-based draft of the human proteome. Nature 509, 582–587 (2014)."),
             h4("Authors"),
